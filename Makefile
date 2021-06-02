@@ -32,6 +32,10 @@ db-migrate:
 db-refresh:
 	docker exec -it heidrun-web bash -c "cd application && php artisan migrate:fresh --seed"
 
+.PHONY: admin-account
+admin-account:
+	docker exec -it heidrun-web bash -c "cd application && php artisan db:seed --class=AdminAccountSeeder"
+
 .PHONY: status
 status:
 	docker-compose -f docker/docker-compose.yml ps

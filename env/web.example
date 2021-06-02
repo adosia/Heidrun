@@ -4,6 +4,9 @@ APP_KEY=base64:uTKldtxnH7YMPpIR4g3O9c6LrLdXhg2MxmMkG7XbVLA=
 APP_DEBUG=true
 APP_URL=http://localhost:8006
 
+DEFAULT_ADMIN_EMAIL=admin@heidrun.app
+DEFAULT_ADMIN_PASSWORD=123456
+
 LOG_CHANNEL=errorlog
 LOG_LEVEL=debug
 
