@@ -1,0 +1,55 @@
+version: "3.5"
+services:
+
+  # Web Service
+  heidrun-web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: heidrun-web
+    restart: unless-stopped
+    tty: true
+    networks: [ heidrun ]
+    volumes:
+      - ../application:/home/heidrun/application
+      - ../private:/home/heidrun/private
+    depends_on:
+      - heidrun-mysql
+    env_file:
+      - ../env/web
+    ports: [ "8006:80" ]
+
+  # MySQL Service
+  heidrun-mysql:
+    image: mysql:8.0
+    container_name: heidrun-mysql
+    restart: unless-stopped
+    tty: true
+    networks: [ heidrun ]
+    env_file:
+      - ../env/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+    volumes: [ "mysql:/var/lib/mysql:cached" ]
+    ports: [ "33006:3306" ]
+
+  # Redis Service
+  heidrun-redis:
+    container_name: heidrun-redis
+    image: redis:5.0
+    restart: always
+    volumes:
+      - redis:/data
+    networks: [ heidrun ]
+
+volumes:
+  mysql:
+    driver: local
+  redis:
+
+networks:
+  heidrun:
+    driver: bridge
