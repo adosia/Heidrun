@@ -78,7 +78,8 @@
                 <small>
                     Developed by
                     <a href="https://github.com/latheesan-k" target="_blank" class="text-white">Latheesan Kanesamoorthy</a>
-                    &amp; community contributors
+                    &amp;
+                    <a href="https://github.com/adosia/Heidrun/graphs/contributors" target="_blank" class="text-white">community contributors</a>
                 </small>
             </div>
 
