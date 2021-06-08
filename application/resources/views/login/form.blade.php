@@ -71,16 +71,7 @@
             </div>
 
             <div class="col-xl-10 col-lg-12 col-md-9 text-center text-white">
-                Powered by
-                <a href="https://github.com/adosia/Heidrun" target="_blank" class="text-white">Heidrun</a>
-                &copy; {{ date('Y') }}
-                <br>
-                <small>
-                    Developed by
-                    <a href="https://github.com/latheesan-k" target="_blank" class="text-white">Latheesan Kanesamoorthy</a>
-                    &amp;
-                    <a href="https://github.com/adosia/Heidrun/graphs/contributors" target="_blank" class="text-white">community contributors</a>
-                </small>
+                @include('layouts.partials.powered-by', ['white' => true])
             </div>
 
         </div>
