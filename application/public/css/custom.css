@@ -2,3 +2,7 @@
     background: url(/images/login-bg.jpg) center;
     background-size: cover;
 }
+
+.app-logo {
+    width: 39px;
+}

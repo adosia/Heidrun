@@ -1,1 +1,1 @@
-<h1>TODO Dashboard.Index</h1>
+@extends('layouts.master')
