@@ -5,7 +5,7 @@ services:
   heidrun-web:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.web
     container_name: heidrun-web
     restart: unless-stopped
     tty: true
