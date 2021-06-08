@@ -12,7 +12,6 @@ services:
     networks: [ heidrun ]
     volumes:
       - ../application:/home/heidrun/application
-      - ../private:/home/heidrun/private
     depends_on:
       - heidrun-mysql
     env_file:
