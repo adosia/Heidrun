@@ -7,7 +7,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\DropWallet\DropWalletController;
+use App\Http\Controllers\ManageQueue\ManageQueueController;
+use App\Http\Controllers\ManageAdmins\ManageAdminsController;
+use App\Http\Controllers\PaymentWallet\PaymentWalletController;
 
 /**
  * Home Routes
@@ -28,4 +33,39 @@ Route::get('logout', [LogoutController::class, 'index'])->name('logout-handler')
  */
 route::prefix('dashboard')->middleware('auth')->group(function() {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+});
+
+/**
+ * Payment Wallet Routes
+ */
+route::prefix('payment-wallet')->middleware('auth')->group(function() {
+    Route::get('/', [PaymentWalletController::class, 'index'])->name('payment-wallet.index');
+});
+
+/**
+ * Drop Wallet Routes
+ */
+route::prefix('drop-wallet')->middleware('auth')->group(function() {
+    Route::get('/', [DropWalletController::class, 'index'])->name('drop-wallet.index');
+});
+
+/**
+ * Manage Admins Routes
+ */
+route::prefix('manage-admins')->middleware('auth')->group(function() {
+    Route::get('/', [ManageAdminsController::class, 'index'])->name('manage-admins.index');
+});
+
+/**
+ * Manage Queue Routes
+ */
+route::prefix('manage-queue')->middleware('auth')->group(function() {
+    Route::get('/', [ManageQueueController::class, 'index'])->name('manage-queue.index');
+});
+
+/**
+ * Settings Routes
+ */
+route::prefix('settings')->middleware('auth')->group(function() {
+    Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
 });
