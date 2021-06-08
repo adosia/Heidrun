@@ -19,6 +19,27 @@ services:
       - ../env/web
     ports: [ "8006:80" ]
 
+  # CNode Service (Cardano Full Node)
+  heidrun-cnode:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.cnode
+    container_name: heidrun-cnode
+    security_opt:
+      - no-new-privileges
+    restart: unless-stopped
+    tty: true
+    networks: [ heidrun ]
+    volumes:
+      - heidrun-cnode-testnet-priv:/opt/cardano/cnode/priv
+      - heidrun-cnode-testnet-db:/opt/cardano/cnode/db
+      - ../cnode-api:/home/guild/cnode-api:cached
+      - ../private:/home/guild/private:cached
+    entrypoint: /home/guild/cnode-run.sh
+    environment:
+      NETWORK: testnet
+      CARDANO_NODE_SOCKET_PATH: /opt/cardano/cnode/sockets/node0.socket
+
   # MySQL Service
   heidrun-mysql:
     image: mysql:8.0
@@ -46,6 +67,8 @@ services:
     networks: [ heidrun ]
 
 volumes:
+  heidrun-cnode-testnet-priv:
+  heidrun-cnode-testnet-db:
   mysql:
     driver: local
   redis:

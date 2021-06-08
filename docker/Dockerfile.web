@@ -20,7 +20,7 @@ RUN cp /usr/local/etc/php/php.ini-production php.ini && \
     rm -rf /etc/apache2/sites-available/* && \
     rm -rf /etc/apache2/sites-enabled/* && \
     echo 'ServerName heidrun.app' >> /etc/apache2/apache2.conf
-COPY /docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY /docker/web-php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY /docker/heidrun.app.conf /etc/apache2/sites-available/heidrun.app.conf
 RUN a2enmod rewrite && \
     a2ensite heidrun.app

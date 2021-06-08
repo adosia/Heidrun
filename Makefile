@@ -44,6 +44,10 @@ status:
 logs:
 	docker-compose -f docker/docker-compose.yml logs -f --tail=100
 
-.PHONY: shell
-shell:
+.PHONY: shell-web
+shell-web:
 	docker exec -it heidrun-web bash
+
+.PHONY: shell-cnode
+shell-cnode:
+	docker exec -it heidrun-cnode bash
