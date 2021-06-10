@@ -9,6 +9,13 @@ RUN apt-get update && \
     sudo apt-get -y autoremove && sudo rm -rf /var/lib/apt/lists/* && \
     sudo rm -rf /usr/bin/apt*
 
+# Install Cardano CLI
+RUN mkdir cardano_cli_setup && cd cardano_cli_setup && \
+    curl -sSL https://hydra.iohk.io/build/6263009/download/1/cardano-node-1.27.0-linux.tar.gz -o cardano_node.tar.gz && \
+    tar -xf cardano_node.tar.gz && \
+    mv ./cardano-cli /usr/local/bin/cardano-cli && \
+    cd .. && rm -rf cardano_cli_setup
+
 # Install & enable required php libraries
 RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
@@ -20,7 +27,7 @@ RUN cp /usr/local/etc/php/php.ini-production php.ini && \
     rm -rf /etc/apache2/sites-available/* && \
     rm -rf /etc/apache2/sites-enabled/* && \
     echo 'ServerName heidrun.app' >> /etc/apache2/apache2.conf
-COPY /docker/web-php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY /docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY /docker/heidrun.app.conf /etc/apache2/sites-available/heidrun.app.conf
 RUN a2enmod rewrite && \
     a2ensite heidrun.app

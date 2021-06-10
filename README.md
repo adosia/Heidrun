@@ -24,8 +24,8 @@ Introduction coming soon...
 * `admin-account` Create a new Heidrun admin account
 * `status` View the status of all running containers
 * `logs` View the logs out of all running containers
-* `shell-web` Drop into an interactive shell inside _heidrun-web_ container
-* `shell-cnode` Drop into an interactive shell inside _heidrun-cnode_ container
+* `shell` Drop into an interactive shell inside _heidrun-web_ container
+* `stats` View the resource usage of all running containers
 
 ### Notes Regarding Cardano Full Node `heidrun-cnode`
 
