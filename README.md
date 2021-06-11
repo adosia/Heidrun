@@ -27,10 +27,6 @@ Introduction coming soon...
 * `shell` Drop into an interactive shell inside _heidrun-web_ container
 * `stats` View the resource usage of all running containers
 
-### Notes Regarding Cardano Full Node `heidrun-cnode`
-
-> Coming Soon
-
 ### Production Setup Notes
 
 > Coming Soon
