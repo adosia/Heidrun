@@ -24,7 +24,7 @@ class CreatePaymentWallet extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'alpha_num', 'min:3', 'max:10'],
+            'name' => ['required', 'alpha_num', 'min:3', 'max:30'],
         ];
     }
 }
