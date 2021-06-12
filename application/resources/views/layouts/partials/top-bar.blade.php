@@ -41,6 +41,13 @@
             </div>
         </li>
 
+        <!-- Cardano Network -->
+        <li class="nav-item mx-1 d-flex align-items-center">
+            <a class="btn btn-{{ env('CARDANO_NETWORK') == NETWORK_TESTNET ? 'danger' : 'primary' }}" href="javascript:;">
+                {{ env('CARDANO_NETWORK') }}
+            </a>
+        </li>
+
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->

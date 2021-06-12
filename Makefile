@@ -51,3 +51,7 @@ shell:
 .PHONY: stats
 stats:
 	docker stats heidrun-web heidrun-mysql heidrun-redis
+
+.PHONY: artisan
+artisan:
+	docker exec -it heidrun-web bash -c "cd application && php artisan $(COMMAND)"

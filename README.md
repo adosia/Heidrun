@@ -26,6 +26,7 @@ Introduction coming soon...
 * `logs` View the logs out of all running containers
 * `shell` Drop into an interactive shell inside _heidrun-web_ container
 * `stats` View the resource usage of all running containers
+* `artisan` Execute Laravel `artisan` command inside _heidrun-web_ container
 
 ### Production Setup Notes
 

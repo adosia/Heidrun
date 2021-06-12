@@ -14,6 +14,7 @@
     <!-- Styles -->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="/css/custom.css?_={{ filemtime(public_path('css/custom.css')) }}" rel="stylesheet">
+    @stack('styles')
 </head>
 <body id="page-top">
 
@@ -34,6 +35,7 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    @include('partials.alerts', ['noMargin' => false])
                     @yield('content')
                 </div>
 
@@ -59,6 +61,7 @@
     <script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="/js/jquery-easing/jquery.easing.min.js"></script>
     <script src="/js/sb-admin-2.min.js"></script>
+    @stack('scripts')
 
 </body>
 </html>

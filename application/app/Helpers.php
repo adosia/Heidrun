@@ -47,3 +47,12 @@ function logError(string $message, Throwable $exception): void {
         ]
     );
 }
+
+/**
+ * @return string
+ */
+function cardanoNetworkFlag(): string {
+    return getenv('CARDANO_NETWORK') === NETWORK_TESTNET
+        ? '--testnet-magic 1097911063'
+        : '--mainnet';
+}

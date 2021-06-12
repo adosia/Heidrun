@@ -19,19 +19,19 @@
         </a>
     </li>
 
-    <!-- Nav Item - Payment Wallet -->
-    <li class="nav-item {{ \Route::is('payment-wallet.*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('payment-wallet.index') }}">
+    <!-- Nav Item - Payment Wallets -->
+    <li class="nav-item {{ \Route::is('payment-wallets.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('payment-wallets.index') }}">
             <i class="fas fa-fw fa-money-bill"></i>
-            <span>Payment Wallet</span>
+            <span>Payment Wallets</span>
         </a>
     </li>
 
-    <!-- Nav Item - Drop Wallet -->
-    <li class="nav-item {{ \Route::is('drop-wallet.*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('drop-wallet.index') }}">
+    <!-- Nav Item - Drop Wallets -->
+    <li class="nav-item {{ \Route::is('drop-wallets.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('drop-wallets.index') }}">
             <i class="fas fa-fw fa-random"></i>
-            <span>Drop Wallet</span>
+            <span>Drop Wallets</span>
         </a>
     </li>
 

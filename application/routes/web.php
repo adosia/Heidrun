@@ -9,15 +9,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\DropWallet\DropWalletController;
+use App\Http\Controllers\DropWallets\DropWalletsController;
 use App\Http\Controllers\ManageQueue\ManageQueueController;
 use App\Http\Controllers\ManageAdmins\ManageAdminsController;
-use App\Http\Controllers\PaymentWallet\PaymentWalletController;
+use App\Http\Controllers\PaymentWallets\PaymentWalletsController;
 
 /**
  * Home Routes
  */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('env-error', [HomeController::class, 'envError'])->name('env-error');
 
 /**
  * Authentication Routes
@@ -36,17 +37,19 @@ route::prefix('dashboard')->middleware('auth')->group(function() {
 });
 
 /**
- * Payment Wallet Routes
+ * Payment Wallets Routes
  */
-route::prefix('payment-wallet')->middleware('auth')->group(function() {
-    Route::get('/', [PaymentWalletController::class, 'index'])->name('payment-wallet.index');
+route::prefix('payment-wallets')->middleware('auth')->group(function() {
+    Route::get('/', [PaymentWalletsController::class, 'index'])->name('payment-wallets.index');
+    Route::get('create', [PaymentWalletsController::class, 'createForm'])->name('payment-wallets.create-form');
+    Route::post('create', [PaymentWalletsController::class, 'createWallet'])->name('payment-wallets.create-wallet');
 });
 
 /**
- * Drop Wallet Routes
+ * Drop Wallets Routes
  */
-route::prefix('drop-wallet')->middleware('auth')->group(function() {
-    Route::get('/', [DropWalletController::class, 'index'])->name('drop-wallet.index');
+route::prefix('drop-wallets')->middleware('auth')->group(function() {
+    Route::get('/', [DropWalletsController::class, 'index'])->name('drop-wallets.index');
 });
 
 /**
