@@ -30,7 +30,7 @@
 
                 <div class="mb-3">
                     <label for="created_by" class="form-label">Created By</label>
-                    <input id="created_by" value="{{ auth()->user()->email }}" type="text" class="form-control" readonly>
+                    <input id="created_by" value="{{ auth()->user()->name }}" type="text" class="form-control" readonly>
                 </div>
 
             </div>

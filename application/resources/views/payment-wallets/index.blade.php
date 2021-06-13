@@ -39,6 +39,7 @@
                             <th>Network</th>
                             <th>Created By</th>
                             <th>Created On</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,10 +47,20 @@
                             <tr>
                                 <td>{{ $wallet->id }}</td>
                                 <td>{{ $wallet->name }}</td>
-                                <td>{{ $wallet->address }}</td>
+                                <td>
+                                    <a title="{{ $wallet->address }}" href="{{ route('payment-wallets.view', $wallet->id) }}">
+                                        {{ \Illuminate\Support\Str::limit($wallet->address, 20) }}
+                                    </a>
+                                </td>
                                 <td>{!! $wallet->network_badge !!}</td>
-                                <td>{{ $wallet->createdByUser->email }}</td>
-                                <td>{{ $wallet->created_at->format('d/m/y H:i:s') }}</td>
+                                <td>{{ $wallet->createdByUser->name }}</td>
+                                <td>{{ $wallet->created_at->diffForHumans() }}</td>
+                                <td>
+                                    <a href="{{ route('payment-wallets.view', $wallet->id) }}" class="badge bg-primary text-white">
+                                        <i class="fas fa-eye fa-sm text-white-50"></i>
+                                        View
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

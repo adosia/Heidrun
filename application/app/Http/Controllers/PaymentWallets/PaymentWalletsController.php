@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PaymentWallets;
 
+use App\Services\BlockFrostService;
 use Exception;
 use Throwable;
 use App\Services\WalletService;
@@ -26,17 +27,25 @@ class PaymentWalletsController extends Controller
     private $walletService;
 
     /**
+     * @var BlockFrostService $blockFrostService
+     */
+    private $blockFrostService;
+
+    /**
      * PaymentWalletsController constructor.
      * @param CardanoCliService $cardanoCliService
      * @param WalletService $walletService
+     * @param BlockFrostService $blockFrostService
      */
     public function __construct(
         CardanoCliService $cardanoCliService,
-        WalletService $walletService
+        WalletService $walletService,
+        BlockFrostService $blockFrostService
     )
     {
         $this->cardanoCliService = $cardanoCliService;
         $this->walletService = $walletService;
+        $this->blockFrostService = $blockFrostService;
     }
 
     /**
@@ -101,6 +110,39 @@ class PaymentWalletsController extends Controller
                 ->back()
                 ->withInput()
                 ->with('error', 'Failed to create payment wallet - ' . $exception->getMessage());
+
+        }
+    }
+
+    public function view(int $walletId)
+    {
+        try {
+
+            // Load database wallet
+            $wallet = $this->walletService->findById($walletId);
+
+            // Check if wallet exists
+            if (!$wallet) {
+                throw new Exception(sprintf(
+                    'Wallet with id "%d" does not exist',
+                    $walletId
+                ));
+            }
+
+            // Load blockchain address
+            $addressUTXOs = [];
+            try {
+                $addressUTXOs = $this->blockFrostService->get("addresses/{$wallet->address}/utxos");
+            } catch (Throwable $exception) { }
+
+            dd($wallet->toArray(), $addressUTXOs);
+
+        } catch (Throwable $exception) {
+
+            // Handle error
+            return redirect()
+                ->route('payment-wallets.index')
+                ->with('error', 'Failed to load wallet - ' . $exception->getMessage());
 
         }
     }

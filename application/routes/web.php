@@ -43,6 +43,7 @@ route::prefix('payment-wallets')->middleware('auth')->group(function() {
     Route::get('/', [PaymentWalletsController::class, 'index'])->name('payment-wallets.index');
     Route::get('create', [PaymentWalletsController::class, 'createForm'])->name('payment-wallets.create-form');
     Route::post('create', [PaymentWalletsController::class, 'createWallet'])->name('payment-wallets.create-wallet');
+    Route::get('{walletId}/view', [PaymentWalletsController::class, 'view'])->name('payment-wallets.view');
 });
 
 /**
@@ -52,6 +53,7 @@ route::prefix('drop-wallets')->middleware('auth')->group(function() {
     Route::get('/', [DropWalletsController::class, 'index'])->name('drop-wallets.index');
     Route::get('create', [DropWalletsController::class, 'createForm'])->name('drop-wallets.create-form');
     Route::post('create', [DropWalletsController::class, 'createWallet'])->name('drop-wallets.create-wallet');
+    Route::get('{walletId}/view', [DropWalletsController::class, 'view'])->name('drop-wallets.view');
 });
 
 /**

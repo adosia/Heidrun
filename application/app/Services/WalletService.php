@@ -12,12 +12,21 @@ use Illuminate\Support\Collection;
 class WalletService
 {
     /**
+     * @param string $walletId
+     * @return Wallet|null
+     */
+    public function findById(string $walletId): ?Wallet
+    {
+        return Wallet::where('id', $walletId)->with('createdByUser')->first();
+    }
+
+    /**
      * @param string $walletName
      * @return Wallet|null
      */
     public function findByName(string $walletName): ?Wallet
     {
-        return Wallet::where('name', $walletName)->first();
+        return Wallet::where('name', $walletName)->with('createdByUser')->first();
     }
 
     /**
