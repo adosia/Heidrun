@@ -50,6 +50,8 @@ route::prefix('payment-wallets')->middleware('auth')->group(function() {
  */
 route::prefix('drop-wallets')->middleware('auth')->group(function() {
     Route::get('/', [DropWalletsController::class, 'index'])->name('drop-wallets.index');
+    Route::get('create', [DropWalletsController::class, 'createForm'])->name('drop-wallets.create-form');
+    Route::post('create', [DropWalletsController::class, 'createWallet'])->name('drop-wallets.create-wallet');
 });
 
 /**
