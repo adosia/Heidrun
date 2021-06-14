@@ -1,5 +1,14 @@
 @extends('layouts.master')
 
+@push('breadcrumbs')
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="{{ route('drop-wallets.index') }}">Payment Wallets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Create</li>
+        </ol>
+    </nav>
+@endpush
+
 @section('content')
     <!-- Create New Payment Wallet -->
     <form action="{{ route('drop-wallets.create-wallet') }}" method="post">
@@ -7,7 +16,7 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    Create New Drop Wallet
+                    Wallet Info
                 </h6>
             </div>
             <div class="card-body">

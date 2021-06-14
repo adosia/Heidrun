@@ -35,6 +35,7 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    @stack('breadcrumbs')
                     @include('partials.alerts', ['noMargin' => false])
                     @yield('content')
                 </div>

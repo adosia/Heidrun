@@ -52,7 +52,39 @@ function logError(string $message, Throwable $exception): void {
  * @return string
  */
 function cardanoNetworkFlag(): string {
-    return getenv('CARDANO_NETWORK') === NETWORK_TESTNET
+    return env('CARDANO_NETWORK') === NETWORK_TESTNET
         ? '--testnet-magic 1097911063'
         : '--mainnet';
+}
+
+/**
+ * @param int $lovelace
+ * @return string
+ */
+function toADA(int $lovelace): string {
+    return ($lovelace / 1000000) . ' ₳DA';
+}
+
+/**
+ * @param string $txHash
+ * @return string
+ */
+function txExplorerUrl(string $txHash): string {
+    return sprintf(
+        'https://explorer.cardano-%s.iohkdev.io/en/transaction?id=%s',
+        env('CARDANO_NETWORK'),
+        $txHash
+    );
+}
+
+/**
+ * @param string $blockNo
+ * @return string
+ */
+function blockExplorerUrl(string $blockNo): string {
+    return sprintf(
+        'https://explorer.cardano-%s.iohkdev.io/en/block?id=%s',
+        env('CARDANO_NETWORK'),
+        $blockNo
+    );
 }

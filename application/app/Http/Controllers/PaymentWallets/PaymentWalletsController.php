@@ -114,7 +114,11 @@ class PaymentWalletsController extends Controller
         }
     }
 
-    public function view(int $walletId)
+    /**
+     * @param int $walletId
+     * @return Application|Factory|View|RedirectResponse
+     */
+    public function show(int $walletId)
     {
         try {
 
@@ -133,9 +137,15 @@ class PaymentWalletsController extends Controller
             $addressUTXOs = [];
             try {
                 $addressUTXOs = $this->blockFrostService->get("addresses/{$wallet->address}/utxos");
-            } catch (Throwable $exception) { }
+            } catch (Throwable $exception) {
+                logError("Failed to load wallet #{$walletId}", $exception);
+            }
 
-            dd($wallet->toArray(), $addressUTXOs);
+            // Render info
+            return view(
+                'payment-wallets.show',
+                compact('wallet', 'addressUTXOs')
+            );
 
         } catch (Throwable $exception) {
 

@@ -4,17 +4,16 @@
     <link href="/js/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 @endpush
 
+@push('breadcrumbs')
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="{{ route('payment-wallets.index') }}">Payment Wallets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Wallet List</li>
+        </ol>
+    </nav>
+@endpush
+
 @section('content')
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Payment Wallets</h1>
-
-        <a href="{{ route('payment-wallets.create-form') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-plus-circle fa-sm text-white-50"></i>
-            Create
-        </a>
-    </div>
-
     <!-- Page Info -->
     <p class="mb-4">
         These wallets are where expected payments/dust transactions should arrive.
@@ -23,10 +22,11 @@
 
     <!-- Wallet List -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-                Wallet List
-            </h6>
+        <div class="card-header py-3 d-flex align-items-center justify-content-between">
+            <a href="{{ route('payment-wallets.create-form') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-plus-circle fa-sm text-white-50"></i>
+                Create
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -48,7 +48,7 @@
                                 <td>{{ $wallet->id }}</td>
                                 <td>{{ $wallet->name }}</td>
                                 <td>
-                                    <a title="{{ $wallet->address }}" href="{{ route('payment-wallets.view', $wallet->id) }}">
+                                    <a title="{{ $wallet->address }}" href="{{ route('payment-wallets.show', $wallet->id) }}">
                                         {{ \Illuminate\Support\Str::limit($wallet->address, 20) }}
                                     </a>
                                 </td>
@@ -56,7 +56,7 @@
                                 <td>{{ $wallet->createdByUser->name }}</td>
                                 <td>{{ $wallet->created_at->diffForHumans() }}</td>
                                 <td>
-                                    <a href="{{ route('payment-wallets.view', $wallet->id) }}" class="badge bg-primary text-white">
+                                    <a href="{{ route('payment-wallets.show', $wallet->id) }}" class="badge bg-primary text-white">
                                         <i class="fas fa-eye fa-sm text-white-50"></i>
                                         View
                                     </a>
