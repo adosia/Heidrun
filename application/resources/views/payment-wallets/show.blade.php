@@ -12,33 +12,37 @@
 @section('content')
     <!-- Wallet Info -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Wallet Info</h6>
-        </div>
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="wallet_address" class="form-label">Wallet Address</label>
-                <input id="wallet_address" value="{{ $wallet->address }}" type="text" class="form-control" readonly>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label for="type" class="form-label">Wallet Type</label>
-                        <input id="type" value="{{ $wallet->type }}" type="text" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="created_by" class="form-label">Created By</label>
-                        <input id="created_by" value="{{ $wallet->createdByUser->name }} ({{ $wallet->createdByUser->email }})" type="text" class="form-control" readonly>
-                    </div>
+        <a href="#wallet-info" aria-controls="wallet-info" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Wallet Info
+            </h6>
+        </a>
+        <div id="wallet-info" class="collapse show">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="wallet_address" class="form-label">Wallet Address</label>
+                    <input id="wallet_address" value="{{ $wallet->address }}" type="text" class="form-control" readonly>
                 </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label for="cardano_network" class="form-label">Cardano Network</label>
-                        <input id="cardano_network" value="{{ ucfirst($wallet->network) }}" type="text" class="form-control" readonly>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Wallet Type</label>
+                            <input id="type" value="{{ $wallet->type }}" type="text" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="created_by" class="form-label">Created By</label>
+                            <input id="created_by" value="{{ $wallet->createdByUser->name }} ({{ $wallet->createdByUser->email }})" type="text" class="form-control" readonly>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="created_at" class="form-label">Created At</label>
-                        <input id="created_at" value="{{ $wallet->created_at->format('d/m/Y H:i:s') }} ({{ $wallet->created_at->diffForHumans() }})" type="text" class="form-control" readonly>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label for="cardano_network" class="form-label">Cardano Network</label>
+                            <input id="cardano_network" value="{{ ucfirst($wallet->network) }}" type="text" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="created_at" class="form-label">Created At</label>
+                            <input id="created_at" value="{{ $wallet->created_at->format('d/m/Y H:i:s') }} ({{ $wallet->created_at->diffForHumans() }})" type="text" class="form-control" readonly>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,7 +63,7 @@
                         UTXO {{ $addressUTXO['tx_hash'] }}#{{ $addressUTXO['tx_index'] }}
                     </h6>
                 </a>
-                <div id="row-{{ $rowIndex }}" class="collapse show" style="">
+                <div id="row-{{ $rowIndex }}" class="collapse show">
                     <div class="card-body">
                         @foreach ($addressUTXO['amount'] as $amount)
                             @if ($amount['unit'] == 'lovelace')
