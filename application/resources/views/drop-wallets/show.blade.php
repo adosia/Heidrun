@@ -3,7 +3,7 @@
 @push('breadcrumbs')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="{{ route('payment-wallets.index') }}">Payment Wallets</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('drop-wallets.index') }}">Drop Wallets</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ $wallet->name }}</li>
         </ol>
     </nav>
@@ -71,13 +71,11 @@
                 <div id="row-{{ $rowIndex }}" class="collapse show">
                     <div class="card-body">
                         @foreach ($addressUTXO['amount'] as $amount)
-                            @foreach ($addressUTXO['amount'] as $amount)
-                                @if ($amount['unit'] == 'lovelace')
-                                    {!! parseADAInfo($amount) !!}
-                                @else
-                                    {!! parseAssetInfo($amount) !!}
-                                @endif
-                            @endforeach
+                            @if ($amount['unit'] == 'lovelace')
+                                {!! parseADAInfo($amount) !!}
+                            @else
+                                {!! parseAssetInfo($amount) !!}
+                            @endif
                         @endforeach
                         <a href="{{ txExplorerUrl($addressUTXO['tx_hash']) }}" target="_blank" class="btn btn-outline-primary mr-2">
                             <i class="fas fa-external-link-square-alt"></i>

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\PaymentWallets;
 
-use App\Services\BlockFrostService;
 use Exception;
 use Throwable;
 use App\Services\WalletService;
 use App\Services\CardanoCliService;
+use App\Services\BlockFrostService;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -123,12 +123,12 @@ class PaymentWalletsController extends Controller
         try {
 
             // Load database wallet
-            $wallet = $this->walletService->findById($walletId);
+            $wallet = $this->walletService->findById($walletId, WALLET_TYPE_PAYMENT);
 
             // Check if wallet exists
             if (!$wallet) {
                 throw new Exception(sprintf(
-                    'Wallet with id "%d" does not exist',
+                    'Payment Wallet with id "%d" does not exist',
                     $walletId
                 ));
             }
@@ -152,7 +152,11 @@ class PaymentWalletsController extends Controller
             // Handle error
             return redirect()
                 ->route('payment-wallets.index')
-                ->with('error', 'Failed to load wallet - ' . $exception->getMessage());
+                ->with('error', sprintf(
+                    'Failed to load payment wallet #%d - %s',
+                    $walletId,
+                    $exception->getMessage()
+                ));
 
         }
     }

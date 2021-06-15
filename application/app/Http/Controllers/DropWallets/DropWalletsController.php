@@ -6,6 +6,7 @@ use Exception;
 use Throwable;
 use App\Services\WalletService;
 use App\Services\CardanoCliService;
+use App\Services\BlockFrostService;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -26,17 +27,25 @@ class DropWalletsController extends Controller
     private $walletService;
 
     /**
+     * @var BlockFrostService $blockFrostService
+     */
+    private $blockFrostService;
+
+    /**
      * PaymentWalletsController constructor.
      * @param CardanoCliService $cardanoCliService
      * @param WalletService $walletService
+     * @param BlockFrostService $blockFrostService
      */
     public function __construct(
         CardanoCliService $cardanoCliService,
-        WalletService $walletService
+        WalletService $walletService,
+        BlockFrostService $blockFrostService
     )
     {
         $this->cardanoCliService = $cardanoCliService;
         $this->walletService = $walletService;
+        $this->blockFrostService = $blockFrostService;
     }
 
     /**
@@ -101,6 +110,53 @@ class DropWalletsController extends Controller
                 ->back()
                 ->withInput()
                 ->with('error', 'Failed to create drop wallet - ' . $exception->getMessage());
+
+        }
+    }
+
+    /**
+     * @param int $walletId
+     * @return Application|Factory|View|RedirectResponse
+     */
+    public function show(int $walletId)
+    {
+        try {
+
+            // Load database wallet
+            $wallet = $this->walletService->findById($walletId, WALLET_TYPE_DROP);
+
+            // Check if wallet exists
+            if (!$wallet) {
+                throw new Exception(sprintf(
+                    'Drop Wallet with id "%d" does not exist',
+                    $walletId
+                ));
+            }
+
+            // Load blockchain address
+            $addressUTXOs = [];
+            try {
+                $addressUTXOs = $this->blockFrostService->get("addresses/{$wallet->address}/utxos");
+            } catch (Throwable $exception) {
+                logError("Failed to load wallet #{$walletId}", $exception);
+            }
+
+            // Render info
+            return view(
+                'drop-wallets.show',
+                compact('wallet', 'addressUTXOs')
+            );
+
+        } catch (Throwable $exception) {
+
+            // Handle error
+            return redirect()
+                ->route('drop-wallets.index')
+                ->with('error', sprintf(
+                    'Failed to load payment wallet #%d - %s',
+                    $walletId,
+                    $exception->getMessage()
+                ));
 
         }
     }

@@ -58,11 +58,48 @@ function cardanoNetworkFlag(): string {
 }
 
 /**
- * @param int $lovelace
+ * @param array $item
  * @return string
  */
-function toADA(int $lovelace): string {
-    return ($lovelace / 1000000) . ' ₳DA';
+function parseADAInfo(array $item): string {
+    return sprintf(
+        '<button class="btn btn-primary mr-2"><strong>%s</strong> ₳DA</button>',
+        $item['quantity'] / 1000000
+    );
+}
+
+/**
+ * @param array $item
+ * @return string
+ */
+function parseAssetInfo(array $item): string {
+    $policyId = substr($item['unit'], 0, 56);
+    $assetName = hex2bin(substr($item['unit'], 56, strlen($item['unit'])));
+    $friendlyQuantity = friendlyQuantity((int) $item['quantity']);
+    return sprintf(
+        '<button class="btn btn-primary mr-2"><strong>%s</strong> %s.%s</button>',
+        $friendlyQuantity,
+        $policyId,
+        $assetName
+    );
+}
+
+/**
+ * @param int $number
+ * @return string
+ */
+function friendlyQuantity(int $number): string {
+    if ($number > 1000) {
+        $x = round($number);
+        $x_number_format = number_format($x);
+        $x_array = explode(',', $x_number_format);
+        $x_parts = ['K', 'M', 'N', 'T'];
+        $x_count_parts = count($x_array) - 1;
+        $x_display = $x_array[0] . ((int) $x_array[1][0] !== 0 ? '.' . $x_array[1][0] : '');
+        $x_display .= $x_parts[$x_count_parts - 1];
+        return $x_display;
+    }
+    return (string) $number;
 }
 
 /**

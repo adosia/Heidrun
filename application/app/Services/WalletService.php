@@ -13,11 +13,15 @@ class WalletService
 {
     /**
      * @param string $walletId
+     * @param string $walletType
      * @return Wallet|null
      */
-    public function findById(string $walletId): ?Wallet
+    public function findById(string $walletId, string $walletType): ?Wallet
     {
-        return Wallet::where('id', $walletId)->with('createdByUser')->first();
+        return Wallet::where('id', $walletId)
+            ->where('type', $walletType)
+            ->with('createdByUser')
+            ->first();
     }
 
     /**
