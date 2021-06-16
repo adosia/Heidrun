@@ -75,4 +75,5 @@ route::prefix('manage-queue')->middleware('auth')->group(function() {
  */
 route::prefix('settings')->middleware('auth')->group(function() {
     Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/', [SettingsController::class, 'update'])->name('settings.update');
 });
