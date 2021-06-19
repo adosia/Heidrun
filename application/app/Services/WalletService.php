@@ -34,6 +34,20 @@ class WalletService
     }
 
     /**
+     * @param string $walletName
+     * @param string $walletType
+     * @param string $cardanoNetwork
+     * @return Wallet|null
+     */
+    public function find(string $walletName, string $walletType, string $cardanoNetwork): ?Wallet
+    {
+        return Wallet::where('name', $walletName)
+            ->where('type', $walletType)
+            ->where('network', $cardanoNetwork)
+            ->first();
+    }
+
+    /**
      * @param string $walletType
      * @param string $walletName
      * @param string $walletAddress

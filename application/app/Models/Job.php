@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Setting extends Model
+class Job extends Model
 {
     use HasFactory;
 
@@ -13,7 +13,10 @@ class Setting extends Model
      * @var string[] $fillable
      */
     protected $fillable = [
-        'key',
-        'value',
+        'type',
+        'payload',
+        'status',
+        'attempts',
+        'logs',
     ];
 }
