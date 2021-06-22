@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -19,4 +20,14 @@ class Job extends Model
         'attempts',
         'logs',
     ];
+
+    /**
+     * @param string $message
+     */
+    public function addLog(string $message): void
+    {
+        $this->update([
+            'logs' => $this->logs . '[ ' . Carbon::now()->toDateTimeString() . ' ] : ' . $message . PHP_EOL,
+        ]);
+    }
 }

@@ -19,6 +19,41 @@ services:
       - ../env/web
     ports: [ "8006:80" ]
 
+  # Horizon Service
+  heidrun-horizon:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: heidrun-horizon
+    restart: unless-stopped
+    tty: true
+    networks: [ heidrun ]
+    volumes:
+      - ../application:/home/heidrun/application
+      - ../private:/home/heidrun/private:cached
+    depends_on:
+      - heidrun-mysql
+    env_file:
+      - ../env/web
+    entrypoint: "php application/artisan horizon"
+
+  # Cron Service
+  heidrun-cron:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: heidrun-cron
+    restart: unless-stopped
+    tty: true
+    networks: [ heidrun ]
+    volumes:
+      - ../application:/home/heidrun/application
+    depends_on:
+      - heidrun-mysql
+    env_file:
+      - ../env/web
+    entrypoint: "./heidrun.cron.sh"
+
   # MySQL Service
   heidrun-mysql:
     image: mysql:8.0

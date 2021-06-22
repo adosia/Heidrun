@@ -50,7 +50,7 @@ shell:
 
 .PHONY: stats
 stats:
-	docker stats heidrun-web heidrun-mysql heidrun-redis
+	docker stats heidrun-web heidrun-horizon heidrun-cron heidrun-mysql heidrun-redis
 
 .PHONY: artisan
 artisan:
