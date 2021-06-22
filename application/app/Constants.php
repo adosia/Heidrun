@@ -17,5 +17,8 @@ const JOB_STATUS_PROCESSING = 'Processing';
 const JOB_STATUS_SUCCESS = 'Success';
 const JOB_STATUS_ERROR = 'Error';
 
+const JOB_MAX_ATTEMPTS = 10;
+const JOB_RETRY_INTERVAL_SECONDS = 30;
+
 const CALLBACK_REQUEST_TYPE_GET = 'get';
 const CALLBACK_REQUEST_TYPE_POST = 'post';

@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use Throwable;
+use App\Models\Job;
 use Illuminate\Bus\Queueable;
 use App\Services\BlockFrostService;
 use Illuminate\Queue\SerializesModels;
@@ -19,9 +21,24 @@ class BaseJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * @var Job $heidrunJob
+     */
+    public $heidrunJob;
+
+    /**
      * @var BlockFrostService $blockFrostService
      */
     private $blockFrostService;
+
+    /**
+     * Create a new job instance.
+     *
+     * @param Job $heidrunJob
+     */
+    public function __construct(Job $heidrunJob)
+    {
+        $this->heidrunJob = $heidrunJob;
+    }
 
     /**
      * @return BlockFrostService
@@ -32,6 +49,20 @@ class BaseJob implements ShouldQueue
         if (!$this->blockFrostService) {
             $this->blockFrostService = app()->make(BlockFrostService::class);
         }
+
         return $this->blockFrostService;
+    }
+
+    /**
+     * @param Throwable $exception
+     */
+    public function failed(Throwable $exception): void
+    {
+        if ($this->heidrunJob) {
+            $this->heidrunJob->addLog(
+                $exception->getMessage(),
+                JOB_STATUS_ERROR
+            );
+        }
     }
 }

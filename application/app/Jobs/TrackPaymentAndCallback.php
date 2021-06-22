@@ -4,39 +4,25 @@ namespace App\Jobs;
 
 use Exception;
 use Throwable;
-use App\Models\Job;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class TrackPaymentAndCallback extends BaseJob
 {
     /**
-     * @var Job $heidrunJob
-     */
-    public $heidrunJob;
-
-    /**
-     * Create a new job instance.
-     *
-     * @param Job $heidrunJob
-     */
-    public function __construct(Job $heidrunJob)
-    {
-        $this->heidrunJob = $heidrunJob;
-    }
-
-    /**
      * Execute the job.
      *
      * @return void
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function handle()
     {
         // Check for valid job type
         if ($this->heidrunJob->type !== JOB_TYPE_TRACK_PAYMENT_AND_CALLBACK) {
-            $errorMessage = sprintf('Invalid job type, could not be handled by %s', __CLASS__);
-            $this->heidrunJob->addLog($errorMessage);
+            $errorMessage = sprintf(
+                'Invalid job type, could not be handled by %s',
+                basename(__CLASS__)
+            );
             throw new Exception($errorMessage);
         }
 
@@ -48,14 +34,20 @@ class TrackPaymentAndCallback extends BaseJob
                 $this->heidrunJob->status,
                 implode(' or ', $validJobStatuses)
             );
-            $this->heidrunJob->addLog($errorMessage);
             throw new Exception($errorMessage);
         }
 
-        // TODO: check attempts
-
         // Add log
-        $this->heidrunJob->addLog('Looking for expected payment');
+        $this->heidrunJob->addLog('Begin processing job');
+
+        // Check if max job attempts exceeded
+        if ($this->heidrunJob->attempts > JOB_MAX_ATTEMPTS) {
+            $errorMessage = sprintf(
+                'Failed to find expected payment after max %d attempts',
+                JOB_MAX_ATTEMPTS
+            );
+            throw new Exception($errorMessage);
+        }
 
         // Update job's status & attempts
         $this->heidrunJob->update([
@@ -101,20 +93,27 @@ class TrackPaymentAndCallback extends BaseJob
             } catch (Throwable $exception) {
 
                 // Add log
-                $this->heidrunJob->addLog('Failed to execute callback: ' . $exception->getMessage() . ', re-trying in 30 seconds');
+                $this->heidrunJob->addLog(sprintf(
+                    'Failed to execute callback: %s, re-trying in %d seconds',
+                    $exception->getMessage(),
+                    JOB_RETRY_INTERVAL_SECONDS
+                ));
 
-                // Release this job back on the queue and re-try after 30 seconds
-                $this->release(30);
+                // Release this job back on the queue and re-try later
+                $this->release(JOB_RETRY_INTERVAL_SECONDS);
 
             }
         }
         else
         {
             // Add log
-            $this->heidrunJob->addLog('Expected payment was not found, re-trying in 30 seconds');
+            $this->heidrunJob->addLog(sprintf(
+                'Expected payment was not found, re-trying in %d seconds',
+                JOB_RETRY_INTERVAL_SECONDS
+            ));
 
-            // Release this job back on the queue and re-try after 30 seconds
-            $this->release(30);
+            // Release this job back on the queue and re-try later
+            $this->release(JOB_RETRY_INTERVAL_SECONDS);
         }
     }
 
@@ -172,6 +171,7 @@ class TrackPaymentAndCallback extends BaseJob
                     $amount['quantity'] ?? 0 === $expectedLovelace
                 ) {
                     $result = [
+                        'lovelace' => $expectedLovelace,
                         'tx_hash' => $utxo['tx_hash'],
                         'tx_index' => $utxo['tx_index'],
                         'output_index' => $utxo['output_index'],
@@ -197,7 +197,7 @@ class TrackPaymentAndCallback extends BaseJob
     private function callback(array $callback, array $expectedPayment): string
     {
         /** @var Response $response */
-        $response = Http::withHeaders(['powered_by' => env('APP_NAME')])->{$callback['request_type']}(
+        $response = Http::withHeaders(['powered-by' => env('APP_NAME')])->{$callback['request_type']}(
             $callback['request_url'],
             [
                 'expectedPayment' => $expectedPayment,

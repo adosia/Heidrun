@@ -23,11 +23,18 @@ class Job extends Model
 
     /**
      * @param string $message
+     * @param string|null $newStatus
      */
-    public function addLog(string $message): void
+    public function addLog(string $message, string $newStatus = null): void
     {
-        $this->update([
+        $payload = [
             'logs' => $this->logs . '[ ' . Carbon::now()->toDateTimeString() . ' ] : ' . $message . PHP_EOL,
-        ]);
+        ];
+
+        if (!empty($newStatus)) {
+            $payload['status'] = $newStatus;
+        }
+
+        $this->update($payload);
     }
 }
