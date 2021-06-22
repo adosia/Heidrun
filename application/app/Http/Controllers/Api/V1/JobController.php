@@ -6,6 +6,7 @@ use App\Services\JobService;
 use Illuminate\Http\Request;
 use App\Services\WalletService;
 use Illuminate\Http\JsonResponse;
+use App\Jobs\TrackPaymentAndCallback;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -121,7 +122,8 @@ class JobController extends BaseApi
             $validator->validated()
         );
 
-        // TODO: Dispatch job
+        // Dispatch job
+        dispatch(new TrackPaymentAndCallback($job));
 
         // Success
         return $this->successResponse(
