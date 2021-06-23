@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Throwable;
 use App\Services\JobService;
 use Illuminate\Http\Request;
 use App\Services\WalletService;
 use Illuminate\Http\JsonResponse;
+use App\Services\BlockFrostService;
 use App\Jobs\TrackPaymentAndCallback;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -32,17 +34,25 @@ class JobController extends BaseApi
     private $walletService;
 
     /**
+     * @var BlockFrostService $blockFrostService
+     */
+    private $blockFrostService;
+
+    /**
      * JobController constructor.
      * @param JobService $jobService
      * @param WalletService $walletService
+     * @param BlockFrostService $blockFrostService
      */
     public function __construct(
         JobService $jobService,
-        WalletService $walletService
+        WalletService $walletService,
+        BlockFrostService $blockFrostService
     )
     {
         $this->jobService = $jobService;
         $this->walletService = $walletService;
+        $this->blockFrostService = $blockFrostService;
     }
 
     /**
@@ -116,7 +126,7 @@ class JobController extends BaseApi
             );
         }
 
-        // Create job
+        // Create new job
         $job = $this->jobService->createJob(
             JOB_TYPE_TRACK_PAYMENT_AND_CALLBACK,
             $validator->validated()
@@ -138,10 +148,110 @@ class JobController extends BaseApi
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws ValidationException
      */
     private function handleTrackPaymentAndDropAsset(Request $request): JsonResponse
     {
-        return $this->errorResponse('Not yet implemented');
+        // Validate request body
+        $validator = Validator::make($request->all(), [
+            'payment_wallet_name' => ['required', 'alpha_num'],
+            'drop_wallet_name' => ['required', 'alpha_num'],
+            'expected_lovelace' => ['required', 'integer'],
+            'drop.policy_id' => ['required', 'string'],
+            'drop.asset_name' => ['required', 'string'],
+            'drop.quantity' => ['required', 'integer'],
+            'drop.receiver_address' => ['required', 'string'],
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return $this->errorResponse(
+                sprintf(
+                    'Validation error: %s',
+                    implode(' ', $validator->errors()->all())
+                ),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        // Check if payment wallet exists
+        if (!$this->walletExists($request->payment_wallet_name, WALLET_TYPE_PAYMENT)) {
+            return $this->errorResponse(
+                sprintf(
+                    'Payment wallet "%s" does not exist',
+                    $request->payment_wallet_name
+                ),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        // Check if drop wallet exists
+        if (!$this->walletExists($request->drop_wallet_name, WALLET_TYPE_DROP)) {
+            return $this->errorResponse(
+                sprintf(
+                    'Drop wallet "%s" does not exist',
+                    $request->payment_wallet_name
+                ),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        // Get validated request payload
+        $requestPayload = $validator->validated();
+
+        // Load drop wallet's address
+        $dropWalletAddress = file_get_contents(sprintf(
+            "%s/%s/payment.addr",
+            WALLET_DIR,
+            $requestPayload['drop_wallet_name']
+        ));
+
+        // Find available drop asset quantity in drop wallet
+        $availableDropAssetQuantity = $this->loadAvailableAssetQuantityFromDropWallet(
+            $dropWalletAddress,
+            $requestPayload['drop']['policy_id'],
+            $requestPayload['drop']['asset_name']
+        );
+
+        // Check if asset and drop quantity exists in drop wallet
+        if (!$availableDropAssetQuantity || $availableDropAssetQuantity < $requestPayload['drop']['quantity']) {
+            if (!$availableDropAssetQuantity) {
+                $errorMessage = sprintf(
+                    'Asset "%s.%s" does not exist in drop wallet',
+                    $requestPayload['drop']['policy_id'],
+                    $requestPayload['drop']['asset_name']
+                );
+            } else {
+                $errorMessage = sprintf(
+                    'Insufficient asset quantity "%s.%s" in the drop wallet, cannot drop %d because there are only %d left',
+                    $requestPayload['drop']['policy_id'],
+                    $requestPayload['drop']['asset_name'],
+                    $requestPayload['drop']['quantity'],
+                    $availableDropAssetQuantity
+                );
+            }
+            return $this->errorResponse(
+                $errorMessage,
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        // Create new job
+        $job = $this->jobService->createJob(
+            JOB_TYPE_TRACK_PAYMENT_AND_DROP_ASSET,
+            $requestPayload
+        );
+
+        // TODO - Dispatch job
+
+        // Success
+        return $this->successResponse(
+            [
+                'message' => 'Job successfully created & scheduled',
+                'job_id' => $job->id,
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -156,5 +266,41 @@ class JobController extends BaseApi
             $walletType,
             env('CARDANO_NETWORK')
         ));
+    }
+
+    /**
+     * @param string $dropWalletAddress
+     * @param string $policyId
+     * @param string $assetName
+     * @return int|null
+     */
+    private function loadAvailableAssetQuantityFromDropWallet(
+        string $dropWalletAddress,
+        string $policyId,
+        string $assetName
+    ): ?int
+    {
+        $assetQuantity = null;
+
+        try {
+
+            $dropWalletUTXOs = $this->blockFrostService->get("addresses/{$dropWalletAddress}/utxos");
+            $assetId = $policyId . bin2hex($assetName);
+
+            foreach ($dropWalletUTXOs as $utxo) {
+                foreach ($utxo['amount'] as $amount) {
+                    if ($amount['unit'] === $assetId) {
+                        $assetQuantity = (int) $amount['quantity'];
+                        break;
+                    }
+                }
+                if ($assetQuantity) {
+                    break;
+                }
+            }
+
+        } catch (Throwable $exception) { }
+
+        return $assetQuantity;
     }
 }
