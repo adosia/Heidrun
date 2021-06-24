@@ -3,7 +3,6 @@
 /**
  * Imports
  */
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
@@ -20,9 +19,14 @@ use App\Http\Controllers\PaymentWallets\PaymentWalletsController;
  */
 if (app()->environment('local')) {
     Route::get('test', function() {
-        $job = \App\Models\Job::where('id', 1)->first();
+        // $job = \App\Models\Job::where('id', 1)->first();
         // (new \App\Jobs\TrackPaymentAndCallback($job))->handle();
-        dispatch(new \App\Jobs\TrackPaymentAndCallback($job));
+        // dispatch(new \App\Jobs\TrackPaymentAndCallback($job));
+
+        $job = \App\Models\Job::where('id', 3)->first();
+        // (new \App\Jobs\TrackPaymentAndDropAsset($job))->handle();
+        dispatch(new \App\Jobs\TrackPaymentAndDropAsset($job));
+
         echo 'Job scheduled';
     });
 }

@@ -18,51 +18,28 @@ class TrackPaymentAndCallback extends BaseJob
     public function handle()
     {
         // Check for valid job type
-        if ($this->heidrunJob->type !== JOB_TYPE_TRACK_PAYMENT_AND_CALLBACK) {
-            $errorMessage = sprintf(
-                'Invalid job type, could not be handled by %s',
-                basename(__CLASS__)
-            );
-            throw new Exception($errorMessage);
-        }
+        $this->checkIsValidJobType(JOB_TYPE_TRACK_PAYMENT_AND_CALLBACK);
 
         // Check for valid job status
-        $validJobStatuses = [JOB_STATUS_PENDING, JOB_STATUS_PROCESSING];
-        if (!in_array($this->heidrunJob->status, $validJobStatuses)) {
-            $errorMessage = sprintf(
-                'Invalid job status "%s", expecting %s',
-                $this->heidrunJob->status,
-                implode(' or ', $validJobStatuses)
-            );
-            throw new Exception($errorMessage);
-        }
-
-        // Add log
-        $this->heidrunJob->addLog('Begin processing job');
+        $this->checkIsValidJobStatus();
 
         // Check if max job attempts exceeded
-        if ($this->heidrunJob->attempts > JOB_MAX_ATTEMPTS) {
-            $errorMessage = sprintf(
-                'Failed to find expected payment after max %d attempts',
-                JOB_MAX_ATTEMPTS
-            );
-            throw new Exception($errorMessage);
-        }
+        $this->checkIfMaxAttemptsExceeded();
 
-        // Update job's status & attempts
-        $this->heidrunJob->update([
-            'status' => JOB_STATUS_PROCESSING,
-            'attempts' => $this->heidrunJob->attempts + 1,
-        ]);
+        // Add log, update status and attempts
+        $this->beginJobProcessing();
 
         // Decode payload
         $payload = json_decode($this->heidrunJob->payload, true);
 
         // Read payment wallet address
-        $paymentWalletAddress = $this->readPaymentWalletAddress($payload['payment_wallet_name']);
+        $paymentWalletAddress = $this->readWalletAddress(
+            WALLET_TYPE_PAYMENT,
+            $payload['payment_wallet_name']
+        );
 
-        // Load wallet address utxos
-        $paymentWalletUTXOs = $this->loadUTXOs($paymentWalletAddress);
+        // Load payment wallet utxos
+        $paymentWalletUTXOs = $this->loadWalletUTXOs($paymentWalletAddress);
 
         // Find expected payment
         $expectedPayment = $this->findExpectedPayment(
@@ -82,13 +59,11 @@ class TrackPaymentAndCallback extends BaseJob
                 // Callback
                 $responseBody = $this->callback($payload['callback'], $expectedPayment);
 
-                // Add Log
-                $this->heidrunJob->addLog('Successfully executed callback, got response: ' . $responseBody);
-
-                // Update job status
-                $this->heidrunJob->update([
-                    'status' => JOB_STATUS_SUCCESS,
-                ]);
+                // Add Log & update status
+                $this->heidrunJob->addLog(
+                    'Successfully executed callback, got response: ' . $responseBody,
+                    JOB_STATUS_SUCCESS
+                );
 
             } catch (Throwable $exception) {
 
@@ -115,77 +90,6 @@ class TrackPaymentAndCallback extends BaseJob
             // Release this job back on the queue and re-try later
             $this->release(JOB_RETRY_INTERVAL_SECONDS);
         }
-    }
-
-    /**
-     * @param $paymentWalletName
-     * @return string
-     * @throws Exception
-     */
-    private function readPaymentWalletAddress($paymentWalletName): string
-    {
-        $paymentWalletAddress = file_get_contents(sprintf(
-            '%s/%s/payment.addr',
-            WALLET_DIR,
-            $paymentWalletName,
-        ));
-
-        if (empty($paymentWalletAddress)) {
-            throw new Exception(sprintf(
-                'Failed to read the address of payment wallet "%s"',
-                $paymentWalletName
-            ));
-        }
-
-        return $paymentWalletAddress;
-    }
-
-    /**
-     * @param string $paymentWalletAddress
-     * @return array
-     */
-    private function loadUTXOs(string $paymentWalletAddress): array
-    {
-        $utxos = [];
-
-        try {
-            $utxos = $this->blockFrostService()->get("addresses/{$paymentWalletAddress}/utxos");
-        } catch (Throwable $exception) { }
-
-        return $utxos;
-    }
-
-    /**
-     * @param array $paymentWalletUTXOs
-     * @param int $expectedLovelace
-     * @return array|null
-     */
-    private function findExpectedPayment(array $paymentWalletUTXOs, int $expectedLovelace): ?array
-    {
-        $result = null;
-
-        foreach ($paymentWalletUTXOs as $utxo) {
-            foreach ($utxo['amount'] as $amount) {
-                if (
-                    $amount['unit'] ?? '' === 'lovelace' &&
-                    $amount['quantity'] ?? 0 === $expectedLovelace
-                ) {
-                    $result = [
-                        'lovelace' => $expectedLovelace,
-                        'tx_hash' => $utxo['tx_hash'],
-                        'tx_index' => $utxo['tx_index'],
-                        'output_index' => $utxo['output_index'],
-                        'block' => $utxo['block'],
-                    ];
-                    break;
-                }
-            }
-            if ($result) {
-                break;
-            }
-        }
-
-        return $result;
     }
 
     /**

@@ -213,9 +213,9 @@ class JobController extends BaseApi
             $requestPayload['drop']['asset_name']
         );
 
-        // Check if asset and drop quantity exists in drop wallet
-        if (!$availableDropAssetQuantity || $availableDropAssetQuantity < $requestPayload['drop']['quantity']) {
-            if (!$availableDropAssetQuantity) {
+        // Check if drop asset and quantity exists in drop wallet
+        if (is_null($availableDropAssetQuantity) || $availableDropAssetQuantity < $requestPayload['drop']['quantity']) {
+            if (is_null($availableDropAssetQuantity)) {
                 $errorMessage = sprintf(
                     'Asset "%s.%s" does not exist in drop wallet',
                     $requestPayload['drop']['policy_id'],
