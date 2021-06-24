@@ -9,6 +9,7 @@ use App\Services\WalletService;
 use Illuminate\Http\JsonResponse;
 use App\Services\BlockFrostService;
 use App\Jobs\TrackPaymentAndCallback;
+use App\Jobs\TrackPaymentAndDropAsset;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -242,7 +243,8 @@ class JobController extends BaseApi
             $requestPayload
         );
 
-        // TODO - Dispatch job
+        // Dispatch job
+        dispatch(new TrackPaymentAndDropAsset($job));
 
         // Success
         return $this->successResponse(
