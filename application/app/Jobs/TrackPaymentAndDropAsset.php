@@ -89,7 +89,7 @@ class TrackPaymentAndDropAsset extends BaseJob
             $this->heidrunJob->addLog('Expected payment was found: ' . json_encode($expectedPayment));
 
             // Init tx path
-            $txPath = sprintf('%s/Drops/%d', PRIVATE_DIR, $this->heidrunJob->id);
+            $txPath = sprintf('%s/drops/%d', PRIVATE_DIR, $this->heidrunJob->id);
             if (is_dir($txPath)) {
                 rrmdir($txPath);
             }
