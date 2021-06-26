@@ -55,3 +55,7 @@ stats:
 .PHONY: artisan
 artisan:
 	docker exec -it heidrun-web bash -c "cd application && php artisan $(COMMAND)"
+
+.PHONY: self-signed-ssl
+self-signed-ssl:
+	cd ssl && openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout apache-cert.key -out apache-cert.crt

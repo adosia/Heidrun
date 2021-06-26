@@ -31,6 +31,7 @@ RUN cp /usr/local/etc/php/php.ini-production php.ini && \
 COPY /docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY /docker/heidrun.app.conf /etc/apache2/sites-available/heidrun.app.conf
 RUN a2enmod rewrite && \
+    a2enmod ssl && \
     a2ensite heidrun.app
 
 # Copy cron runner script
@@ -53,4 +54,4 @@ USER heidrun
 WORKDIR /home/heidrun
 
 # Expose apache port
-EXPOSE 80
+EXPOSE 443

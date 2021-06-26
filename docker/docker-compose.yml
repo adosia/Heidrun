@@ -13,11 +13,12 @@ services:
     volumes:
       - ../application:/home/heidrun/application
       - ../private:/home/heidrun/private:cached
+      - ../ssl:/home/heidrun/ssl
     depends_on:
       - heidrun-mysql
     env_file:
       - ../env/web
-    ports: [ "8006:80" ]
+    ports: [ "8006:443" ]
 
   # Horizon Service
   heidrun-horizon:
