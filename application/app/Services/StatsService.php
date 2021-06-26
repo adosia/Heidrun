@@ -17,10 +17,10 @@ class StatsService
     public function summary(): array
     {
         return [
-            'totalWallets' => $this->countAllWallets(),
-            'pendingJobs' => $this->countJobsByStatus([JOB_STATUS_PENDING, JOB_STATUS_PROCESSING]),
-            'successJobs' => $this->countJobsByStatus([JOB_STATUS_SUCCESS]),
-            'errorJobs' => $this->countJobsByStatus([JOB_STATUS_ERROR]),
+            'pendingJobs' => $this->countJobsByStatus(JOB_STATUS_PENDING),
+            'processingJobs' => $this->countJobsByStatus(JOB_STATUS_PROCESSING),
+            'successJobs' => $this->countJobsByStatus(JOB_STATUS_SUCCESS),
+            'errorJobs' => $this->countJobsByStatus(JOB_STATUS_ERROR),
             'cpu' => $this->cpuInfo(),
             'ram' => $this->memoryInfo(),
             'disk' => $this->diskInfo(),
@@ -36,12 +36,12 @@ class StatsService
     }
 
     /**
-     * @param array $statuses
+     * @param string $status
      * @return int
      */
-    private function countJobsByStatus(array $statuses): int
+    private function countJobsByStatus(string $status): int
     {
-        return Job::whereIn('status', $statuses)->count();
+        return Job::where('status', $status)->count();
     }
 
     /**
