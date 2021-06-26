@@ -4,7 +4,7 @@ MAINTAINER Latheesan Kanesamoorthy <latheesan87@gmail.com>
 # Update base system
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y wget curl nano sudo libzip-dev zip unzip && \
+    apt-get install --no-install-recommends -y wget curl nano sudo libzip-dev zip unzip libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
     sudo apt-get -y purge && sudo apt-get -y clean && \
     sudo apt-get -y autoremove && sudo rm -rf /var/lib/apt/lists/* && \
     sudo rm -rf /usr/bin/apt*
@@ -21,7 +21,7 @@ RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
     && docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-enable redis \
-    && docker-php-ext-install zip mysqli pdo_mysql pcntl
+    && docker-php-ext-install zip mysqli pdo_mysql pcntl gd
 
 # Configure php & apache
 RUN cp /usr/local/etc/php/php.ini-production php.ini && \

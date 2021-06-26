@@ -191,7 +191,7 @@ class TrackPaymentAndDropAsset extends BaseJob
                 ));
 
                 // Release this job back on the queue and re-try later
-                $this->release(JOB_RETRY_INTERVAL_SECONDS);
+                $this->reQueueJob();
 
             } finally {
 
@@ -211,7 +211,7 @@ class TrackPaymentAndDropAsset extends BaseJob
             ));
 
             // Release this job back on the queue and re-try later
-            $this->release(JOB_RETRY_INTERVAL_SECONDS);
+            $this->reQueueJob();
         }
     }
 
@@ -261,5 +261,17 @@ class TrackPaymentAndDropAsset extends BaseJob
         $response = $this->blockFrostService()->get('blocks/latest');
 
         return (int) $response['slot'];
+    }
+
+    /**
+     * Re-queue the job after to try again later
+     */
+    private function reQueueJob(): void
+    {
+        $this->delete();
+
+        if ($this->job->isDeleted()) {
+            dispatch(new TrackPaymentAndDropAsset($this->heidrunJob))->delay(JOB_RETRY_INTERVAL_SECONDS);
+        }
     }
 }

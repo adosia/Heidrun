@@ -7,13 +7,15 @@
     "require": {
         "php": "^7.3|^8.0",
         "ext-curl": "*",
+        "ext-gd": "*",
         "ext-json": "*",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
         "laravel/horizon": "^5.7",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "simplesoftwareio/simple-qrcode": "~4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

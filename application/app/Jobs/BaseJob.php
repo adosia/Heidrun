@@ -7,6 +7,7 @@ use Throwable;
 use App\Models\Job;
 use Illuminate\Bus\Queueable;
 use App\Services\BlockFrostService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -185,6 +186,15 @@ class BaseJob implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         if ($this->heidrunJob) {
+            Log::error(
+                'Heidrun job failed to process',
+                [
+                    'error' => $exception->getMessage(),
+                    'jobId' => $this->heidrunJob->id,
+                    'stackTrace' => $exception->getTrace(),
+                ]
+            );
+
             $this->heidrunJob->addLog(
                 $exception->getMessage(),
                 JOB_STATUS_ERROR

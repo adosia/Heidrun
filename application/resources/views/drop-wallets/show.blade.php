@@ -21,7 +21,8 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="wallet_address" class="form-label">Wallet Address</label>
-                    <input id="wallet_address" value="{{ $wallet->address }}" type="text" class="form-control" readonly>
+                    <input id="wallet_address" value="{{ $wallet->address }}" type="text" class="form-control mb-2" readonly>
+                    {!! QrCode::size(128)->generate($wallet->address); !!}
                 </div>
                 <div class="row">
                     <div class="col-6">

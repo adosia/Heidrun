@@ -75,7 +75,7 @@ class TrackPaymentAndCallback extends BaseJob
                 ));
 
                 // Release this job back on the queue and re-try later
-                $this->release(JOB_RETRY_INTERVAL_SECONDS);
+                $this->reQueueJob();
 
             }
         }
@@ -88,7 +88,7 @@ class TrackPaymentAndCallback extends BaseJob
             ));
 
             // Release this job back on the queue and re-try later
-            $this->release(JOB_RETRY_INTERVAL_SECONDS);
+            $this->reQueueJob();
         }
     }
 
@@ -114,5 +114,17 @@ class TrackPaymentAndCallback extends BaseJob
         }
 
         return $response->body();
+    }
+
+    /**
+     * Re-queue the job after to try again later
+     */
+    private function reQueueJob(): void
+    {
+        $this->delete();
+
+        if ($this->job->isDeleted()) {
+            dispatch(new TrackPaymentAndCallback($this->heidrunJob))->delay(JOB_RETRY_INTERVAL_SECONDS);
+        }
     }
 }
