@@ -151,6 +151,6 @@ I recommend running `php artisan config:clear` inside the web container using `m
 🗹 Track Payment And Drop Asset
 ☐ Manage Admins
 ☐ Manage Queue
-☐ Migrate some of the (Constants)[./application/app/Constants.php] as configurabe settings
+☐ Migrate some of the constants as configurabe settings on the GUI
 ☐ Handle multiple native assets in a single utxo
 ```
