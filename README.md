@@ -136,3 +136,19 @@ I recommend running `php artisan config:clear` inside the web container using `m
 * Run `make shell` and type `php artisan key:generate --show` command
 * Copy the output and update `env/web` and change `APP_KEY` environment variable
 * Now run `php arisan migrate:fresh --seed` (inside the web container) to drop the database and re-run the migrations and re-seed the admin account
+
+### Caveats / Notes
+
+* Do not send more than 1 native asset to your `Drop` wallet in a single transaction, the system is not cleaver enough (yet) to deal with multiple native assets on a single UTXO
+
+### TODO List
+
+🗹 Authentication
+🗹 Manage Wallets
+🗹 Manage API Access Token (via Settings)
+🗹 Track Payment And Callback
+🗹 Track Payment And Drop Asset
+☐ Manage Admins
+☐ Manage Queue
+☐ Migrate some of the (Constants)[./application/app/Constants.php] as configurabe settings
+☐ Handle multiple native assets in a single utxo
