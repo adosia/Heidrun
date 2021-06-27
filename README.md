@@ -96,7 +96,7 @@ Example error response:
 2. Generate new self-signed ssl certificates with: `make self-signed-ssl` 
 3. Copy `env/mysql.example` as `env/mysql` and `env/web.example` as `env/web` and modify the values as required
 4. Build & run the app with: `make build`
-5. Visit https://localhost:8006 to access the application
+5. Visit https://localhost:8006 to access the application and https://localhost:8006/horizon to view the queue
 
 ### Available `make` Commands
 
