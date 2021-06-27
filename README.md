@@ -78,10 +78,10 @@ Example error response:
 
 ### Application GUI Screenshots
 
-[![Dashboard](./screenshots/dashboard_tn.jpg)](./screenshots/dashboard.png)
-[![Wallet List](./screenshots/payment-wallets_tn.jpg)](./screenshots/payment-wallets.png)
-[![Wallet Info](./screenshots/payment-wallet-info_tn.jpg)](./screenshots/payment-wallet-info.png)
-[![Settings](./screenshots/settings_tn.jpg)](./screenshots/settings.png)
+[![Dashboard](./screenshots/dashboard_tn.jpg)](https://raw.githubusercontent.com/adosia/Heidrun/main/screenshots/dashboard.png)
+[![Wallet List](./screenshots/payment-wallets_tn.jpg)](https://raw.githubusercontent.com/adosia/Heidrun/main/screenshots/payment-wallets.png)
+[![Wallet Info](./screenshots/payment-wallet-info_tn.jpg)](https://raw.githubusercontent.com/adosia/Heidrun/main/screenshots/payment-wallet-info.png)
+[![Settings](./screenshots/settings_tn.jpg)](https://raw.githubusercontent.com/adosia/Heidrun/main/screenshots/settings.png)
 
 ### Minimum Requirements
 
