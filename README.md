@@ -19,7 +19,7 @@ curl --insecure --location --request POST 'https://localhost:8006/api/v1/job/cre
     "payment_wallet_name": "MyAwesomeWallet",
     "expected_lovelace": 1513147,
     "callback": {
-        "request_url": "https://enk9723u6xrh.x.pipedream.net",
+        "request_url": "https://your-callback-site.com/webhook/endpoint",
         "request_type": "post",
         "request_params": {
             "session_id": "asdasdsads",
@@ -36,7 +36,7 @@ When a payment detected in a wallet, it can drop a native asset to a receiver's 
 Example api request:
 ```shell
 curl --insecure --location --request POST 'https://localhost:8006/api/v1/job/create' \
---header 'api-access-token: a3pHN3ZiXMa5,!ZU' \
+--header 'api-access-token: YOUR_API_ACCESS_TOKEN_HERE' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "type": "TrackPaymentAndDropAsset",
