@@ -90,9 +90,9 @@ Example error response:
 
 > Tested well on latest Ubuntu operating system, using 1 GB RAM and 2 GB SWAP
 
-### Local/Development Installation
+### Installation Steps
 
-1. Clone the repo with: `git clone git@github.com:adosia/Heidrun.git && cd Heidrun`
+1. Clone the repo with: `git clone https://github.com/adosia/Heidrun.git && cd Heidrun`
 2. Generate new self-signed ssl certificates with: `make self-signed-ssl` 
 3. Copy `env/mysql.example` as `env/mysql` and `env/web.example` as `env/web` and modify the values as required
 4. Build & run the app with: `make build`
