@@ -140,6 +140,7 @@ I recommend running `php artisan config:clear` inside the web container using `m
 ### Caveats / Notes
 
 * Do not send more than 1 native asset to your `Drop` wallet in a single transaction, the system is not cleaver enough (yet) to deal with multiple native assets on a single UTXO
+* Just send one native asset at a time to your `Drop` wallet
 
 ### TODO List
 
