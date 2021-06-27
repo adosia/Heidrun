@@ -143,6 +143,7 @@ I recommend running `php artisan config:clear` inside the web container using `m
 
 ### TODO List
 
+```
 🗹 Authentication
 🗹 Manage Wallets
 🗹 Manage API Access Token (via Settings)
@@ -152,3 +153,4 @@ I recommend running `php artisan config:clear` inside the web container using `m
 ☐ Manage Queue
 ☐ Migrate some of the (Constants)[./application/app/Constants.php] as configurabe settings
 ☐ Handle multiple native assets in a single utxo
+```
