@@ -1,19 +1,23 @@
+export COMPOSE_PROJECT_NAME=heidrun
+export COMPOSE_FILE=docker/docker-compose.yml
+
 .DEFAULT_GOAL := up
 
 .PHONY: up
 up:
 	$(MAKE) down
-	docker-compose -f docker/docker-compose.yml up -d
+	docker-compose up -d
 	$(MAKE) composer-install
+	./docker/wait-for-mysql.sh
 	$(MAKE) db-migrate
 
 .PHONY: down
 down:
-	docker-compose -f docker/docker-compose.yml down --remove-orphans
+	docker-compose down --remove-orphans
 
 .PHONY: build
 build:
-	docker-compose -f docker/docker-compose.yml build
+	docker-compose build
 	$(MAKE) up
 
 #
@@ -38,11 +42,11 @@ admin-account:
 
 .PHONY: status
 status:
-	docker-compose -f docker/docker-compose.yml ps
+	docker-compose ps
 
 .PHONY: logs
 logs:
-	docker-compose -f docker/docker-compose.yml logs -f --tail=100
+	docker-compose logs -f --tail=100
 
 .PHONY: shell
 shell:
